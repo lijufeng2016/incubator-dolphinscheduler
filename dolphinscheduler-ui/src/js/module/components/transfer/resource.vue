@@ -24,10 +24,10 @@
                 <x-button type="ghost" value="udfResource" @click="_ckUDf">{{$t('UDF resources')}}</x-button>
             </x-button-group>
         </div>
-        <treeselect v-show="checkedValue=='fileResource'" v-model="selectFileSource" :multiple="true" :options="fileList" :normalizer="normalizer" :value-consists-of="valueConsistsOf" :placeholder="$t('Please select resources')">
+        <treeselect v-show="checkedValue=='fileResource'" v-model="selectFileSource" :multiple="true" style="max-height: 500px;overflow: auto" :options="fileList" :normalizer="normalizer" :value-consists-of="valueConsistsOf" :placeholder="$t('Please select resources')">
           <div slot="value-label" slot-scope="{ node }">{{ node.raw.fullName }}</div>
         </treeselect>
-        <treeselect v-show="checkedValue=='udfResource'" v-model="selectUdfSource" :multiple="true" :options="udfList" :normalizer="normalizer" :value-consists-of="valueConsistsOf" :placeholder="$t('Please select resources')">
+        <treeselect v-show="checkedValue=='udfResource'" v-model="selectUdfSource" :multiple="true" style="max-height: 500px;overflow: auto" :options="udfList" :normalizer="normalizer" :value-consists-of="valueConsistsOf" :placeholder="$t('Please select resources')">
           <div slot="value-label" slot-scope="{ node }">{{ node.raw.fullName }}</div>
         </treeselect>
         <!-- <div class="select-list-box">
