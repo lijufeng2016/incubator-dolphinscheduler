@@ -35,6 +35,7 @@ import org.apache.dolphinscheduler.server.worker.cache.impl.TaskExecutionContext
 import org.apache.dolphinscheduler.server.worker.processor.TaskCallbackService;
 import org.apache.dolphinscheduler.server.worker.task.AbstractTask;
 import org.apache.dolphinscheduler.server.worker.task.TaskManager;
+import org.apache.dolphinscheduler.service.alert.AlertClientService;
 import org.apache.dolphinscheduler.service.bean.SpringApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,14 +78,29 @@ public class TaskExecuteThread implements Runnable {
     private TaskExecutionContextCacheManager taskExecutionContextCacheManager;
 
     /**
+     * alert client server
+     */
+    private AlertClientService alertClientService;
+
+    /**
+     * task logger
+     */
+    private Logger taskLogger;
+
+    /**
      *  constructor
      * @param taskExecutionContext taskExecutionContext
      * @param taskCallbackService taskCallbackService
      */
-    public TaskExecuteThread(TaskExecutionContext taskExecutionContext, TaskCallbackService taskCallbackService){
+    public TaskExecuteThread(TaskExecutionContext taskExecutionContext
+            , TaskCallbackService taskCallbackService
+            , Logger taskLogger, AlertClientService alertClientService){
         this.taskExecutionContext = taskExecutionContext;
         this.taskCallbackService = taskCallbackService;
         this.taskExecutionContextCacheManager = SpringApplicationContext.getBean(TaskExecutionContextCacheManagerImpl.class);
+        this.taskLogger = taskLogger;
+        this.alertClientService = alertClientService;
+
     }
 
     @Override
@@ -119,8 +135,7 @@ public class TaskExecuteThread implements Runnable {
                     taskExecutionContext.getProcessInstanceId(),
                     taskExecutionContext.getTaskInstanceId()));
 
-            task = TaskManager.newTask(taskExecutionContext,
-                    taskLogger);
+            task = TaskManager.newTask(taskExecutionContext, taskLogger, alertClientService);
 
             // task init
             task.init();

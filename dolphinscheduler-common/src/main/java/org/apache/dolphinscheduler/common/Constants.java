@@ -97,6 +97,11 @@ public final class Constants {
     public static final String YARN_RESOURCEMANAGER_HA_RM_IDS = "yarn.resourcemanager.ha.rm.ids";
     public static final String YARN_RESOURCEMANAGER_HA_XX = "xx";
 
+    /***
+     * alert rpc port
+     */
+    public static final int ALERT_RPC_PORT = 50052;
+
 
     /**
      * yarn.application.status.address

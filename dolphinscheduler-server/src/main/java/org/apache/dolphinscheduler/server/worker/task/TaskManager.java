@@ -30,6 +30,7 @@ import org.apache.dolphinscheduler.server.worker.task.shell.ShellTask;
 import org.apache.dolphinscheduler.server.worker.task.spark.SparkTask;
 import org.apache.dolphinscheduler.server.worker.task.sql.SqlTask;
 import org.apache.dolphinscheduler.server.worker.task.sqoop.SqoopTask;
+import org.apache.dolphinscheduler.service.alert.AlertClientService;
 import org.slf4j.Logger;
 
 /**
@@ -45,7 +46,7 @@ public class TaskManager {
    * @throws IllegalArgumentException illegal argument exception
    */
   public static AbstractTask newTask(TaskExecutionContext taskExecutionContext,
-                                     Logger logger)
+                                     Logger logger, AlertClientService alertClientService)
       throws IllegalArgumentException {
     switch (EnumUtils.getEnum(TaskType.class,taskExecutionContext.getTaskType())) {
         case SHELL:
@@ -53,7 +54,7 @@ public class TaskManager {
       case PROCEDURE:
         return new ProcedureTask(taskExecutionContext, logger);
       case SQL:
-        return new SqlTask(taskExecutionContext, logger);
+        return new SqlTask(taskExecutionContext, logger, alertClientService);
       case MR:
         return new MapReduceTask(taskExecutionContext, logger);
       case SPARK:

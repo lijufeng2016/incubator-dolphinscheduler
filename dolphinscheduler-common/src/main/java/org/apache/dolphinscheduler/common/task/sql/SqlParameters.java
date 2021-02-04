@@ -75,6 +75,11 @@ public class SqlParameters extends AbstractParameters {
     private List<String> postStatements;
 
     /**
+     * groupId
+     */
+    private int groupId;
+
+    /**
      * title
      */
     private String title;
@@ -183,6 +188,13 @@ public class SqlParameters extends AbstractParameters {
     public void setPostStatements(List<String> postStatements) {
         this.postStatements = postStatements;
     }
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
 
     @Override
     public boolean checkParameters() {
@@ -209,6 +221,7 @@ public class SqlParameters extends AbstractParameters {
                 ", receiversCc='" + receiversCc + '\'' +
                 ", preStatements=" + preStatements +
                 ", postStatements=" + postStatements +
+                ", groupId=" + groupId +
                 '}';
     }
 }

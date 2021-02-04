@@ -117,10 +117,44 @@
         <servlet-api.version>2.5</servlet-api.version>
         <swagger.version>1.9.3</swagger.version>
         <springfox.version>2.9.2</springfox.version>
+        <dep.airlift.version>0.184</dep.airlift.version>
+        <dep.packaging.version>${dep.airlift.version}</dep.packaging.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.dolphinscheduler</groupId>
+                <artifactId>dolphinscheduler-alert-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sonatype.aether</groupId>
+                <artifactId>aether-api</artifactId>
+                <version>1.13.1</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.airlift.resolver</groupId>
+                <artifactId>resolver</artifactId>
+                <version>1.5</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>6.2.1</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.dolphinscheduler</groupId>
+                <artifactId>dolphinscheduler-spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
@@ -203,11 +237,11 @@
                 <artifactId>dolphinscheduler-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.dolphinscheduler</groupId>
-                <artifactId>dolphinscheduler-plugin-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.apache.dolphinscheduler</groupId>-->
+<!--                <artifactId>dolphinscheduler-plugin-api</artifactId>-->
+<!--                <version>${project.version}</version>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>org.apache.dolphinscheduler</groupId>
                 <artifactId>dolphinscheduler-common</artifactId>
@@ -553,6 +587,12 @@
         <pluginManagement>
             <plugins>
 
+                <plugin>
+                    <groupId>org.apache.dolphinscheduler</groupId>
+                    <artifactId>dolphinscheduler-maven-plugin</artifactId>
+                    <version>1.0.0</version>
+                    <extensions>true</extensions>
+                </plugin>
 
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -620,6 +660,23 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.dolphinscheduler</groupId>
+                <artifactId>dolphinscheduler-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <!--<configuration>-->
+                <!--<allowedProvidedDependencies>-->
+                <!--<allowedProvidedDependency>org.apache.dolphinscheduler:dolphinscheduler-common</allowedProvidedDependency>-->
+                <!--</allowedProvidedDependencies>-->
+                <!--</configuration>-->
+            </plugin>
+
+            <plugin>
+                <groupId>ca.vanzyl.maven.plugins</groupId>
+                <artifactId>provisio-maven-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -999,7 +1056,7 @@
     </build>
 
     <modules>
-        <module>dolphinscheduler-ui</module>
+<!--        <module>dolphinscheduler-ui</module>-->
         <module>dolphinscheduler-server</module>
         <module>dolphinscheduler-common</module>
         <module>dolphinscheduler-api</module>
@@ -1008,6 +1065,8 @@
         <module>dolphinscheduler-dist</module>
         <module>dolphinscheduler-remote</module>
         <module>dolphinscheduler-service</module>
-        <module>dolphinscheduler-plugin-api</module>
+        <module>dolphinscheduler-spi</module>
+<!--        <module>dolphinscheduler-plugin-api</module>-->
+        <module>dolphinscheduler-alert-plugin</module>
     </modules>
 </project>

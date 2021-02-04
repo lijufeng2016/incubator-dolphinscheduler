@@ -19,7 +19,6 @@ package org.apache.dolphinscheduler.server.worker.task.sql;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
-import org.apache.dolphinscheduler.alert.utils.MailUtils;
 import org.apache.dolphinscheduler.common.Constants;
 import org.apache.dolphinscheduler.common.enums.*;
 import org.apache.dolphinscheduler.common.enums.DbType;
@@ -35,11 +34,13 @@ import org.apache.dolphinscheduler.dao.AlertDao;
 import org.apache.dolphinscheduler.dao.datasource.BaseDataSource;
 import org.apache.dolphinscheduler.dao.datasource.DataSourceFactory;
 import org.apache.dolphinscheduler.dao.entity.User;
+import org.apache.dolphinscheduler.remote.command.alert.AlertSendResponseCommand;
 import org.apache.dolphinscheduler.server.entity.SQLTaskExecutionContext;
 import org.apache.dolphinscheduler.server.entity.TaskExecutionContext;
 import org.apache.dolphinscheduler.server.utils.ParamUtils;
 import org.apache.dolphinscheduler.server.utils.UDFUtils;
 import org.apache.dolphinscheduler.server.worker.task.AbstractTask;
+import org.apache.dolphinscheduler.service.alert.AlertClientService;
 import org.apache.dolphinscheduler.service.bean.SpringApplicationContext;
 import org.slf4j.Logger;
 
@@ -74,12 +75,15 @@ public class SqlTask extends AbstractTask {
      */
     private TaskExecutionContext taskExecutionContext;
 
+    private AlertClientService alertClientService;
+
+
     /**
      * default query sql limit
      */
     private static final int LIMIT = 10000;
 
-    public SqlTask(TaskExecutionContext taskExecutionContext, Logger logger) {
+    public SqlTask(TaskExecutionContext taskExecutionContext, Logger logger, AlertClientService alertClientService) {
         super(taskExecutionContext, logger);
 
         this.taskExecutionContext = taskExecutionContext;
@@ -90,7 +94,7 @@ public class SqlTask extends AbstractTask {
         if (!sqlParameters.checkParameters()) {
             throw new RuntimeException("sql task params is not valid");
         }
-
+        this.alertClientService = alertClientService;
         this.alertDao = SpringApplicationContext.getBean(AlertDao.class);
     }
 
@@ -270,7 +274,7 @@ public class SqlTask extends AbstractTask {
         String result = JSONUtils.toJsonString(resultJSONArray);
         logger.debug("execute sql : {}", result);
 
-        sendAttachment(StringUtils.isNotEmpty(sqlParameters.getTitle()) ?
+        sendAttachment(sqlParameters.getGroupId(),StringUtils.isNotEmpty(sqlParameters.getTitle()) ?
                         sqlParameters.getTitle(): taskExecutionContext.getTaskName() + " query result sets",
                 JSONUtils.toJsonString(resultJSONArray));
     }
@@ -419,45 +423,10 @@ public class SqlTask extends AbstractTask {
      * @param title     title
      * @param content   content
      */
-    public void sendAttachment(String title,String content){
-
-        List<User> users = alertDao.queryUserByAlertGroupId(taskExecutionContext.getSqlTaskExecutionContext().getWarningGroupId());
-
-        // receiving group list
-        List<String> receiversList = new ArrayList<>();
-        for(User user:users){
-            receiversList.add(user.getEmail().trim());
-        }
-        // custom receiver
-        String receivers = sqlParameters.getReceivers();
-        if (StringUtils.isNotEmpty(receivers)){
-            String[] splits = receivers.split(COMMA);
-            for (String receiver : splits){
-                receiversList.add(receiver.trim());
-            }
-        }
-
-        // copy list
-        List<String> receiversCcList = new ArrayList<>();
-        // Custom Copier
-        String receiversCc = sqlParameters.getReceiversCc();
-        if (StringUtils.isNotEmpty(receiversCc)){
-            String[] splits = receiversCc.split(COMMA);
-            for (String receiverCc : splits){
-                receiversCcList.add(receiverCc.trim());
-            }
-        }
-
-        String showTypeName = sqlParameters.getShowType().replace(COMMA,"").trim();
-        if(EnumUtils.isValidEnum(ShowType.class,showTypeName)){
-            Map<String, Object> mailResult = MailUtils.sendMails(receiversList,
-                    receiversCcList, title, content, ShowType.valueOf(showTypeName).getDescp());
-            if(!(boolean) mailResult.get(STATUS)){
-                throw new RuntimeException("send mail failed!");
-            }
-        }else{
-            logger.error("showType: {} is not valid "  ,showTypeName);
-            throw new RuntimeException(String.format("showType: %s is not valid ",showTypeName));
+    public void sendAttachment(int groupId, String title,String content){
+        AlertSendResponseCommand alertSendResponseCommand = alertClientService.sendAlert(groupId, title, content);
+        if (!alertSendResponseCommand.getResStatus()) {
+            throw new RuntimeException("send mail failed!");
         }
     }
 
