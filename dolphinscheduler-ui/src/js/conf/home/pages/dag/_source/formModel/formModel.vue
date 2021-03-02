@@ -98,7 +98,7 @@
             <span>{{$t('Number of failed retries')}}</span>
           </div>
           <div class="cont-box">
-            <m-select-input v-model="maxRetryTimes" :list="[0,1,2,3,4]"></m-select-input>
+            <m-select-input v-model="maxRetryTimes" :list="[0,1,2,3,4,120]"></m-select-input>
             <span>({{$t('Times')}})</span>
             <span class="text-b">{{$t('Failed retry interval')}}</span>
             <m-select-input v-model="retryInterval" :list="[1,10,30,60,120]"></m-select-input>
