@@ -90,7 +90,7 @@ public enum ExecutionStatus {
      * @return status
      */
     public boolean typeIsFailure() {
-        return this == FAILURE || this == NEED_FAULT_TOLERANCE || this == KILL;
+        return this == FAILURE || this == NEED_FAULT_TOLERANCE;
     }
 
     /**
@@ -145,7 +145,7 @@ public enum ExecutionStatus {
      * @return status
      */
     public boolean typeIsCancel() {
-        return this == KILL || this == STOP || this == READY_STOP;
+        return this == KILL || this == STOP;
     }
 
     public int getCode() {

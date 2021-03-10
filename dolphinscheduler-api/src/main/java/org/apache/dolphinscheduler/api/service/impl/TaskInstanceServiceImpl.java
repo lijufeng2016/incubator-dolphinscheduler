@@ -168,7 +168,7 @@ public class TaskInstanceServiceImpl extends BaseServiceImpl implements TaskInst
         }
 
         // check whether the task instance state type is failure
-        if (!task.getState().typeIsFailure()) {
+        if (!task.getState().typeIsFailure() && !task.getState().typeIsCancel()) {
             putMsg(result, Status.TASK_INSTANCE_STATE_OPERATION_ERROR, taskInstanceId, task.getState().toString());
             return result;
         }
