@@ -107,7 +107,7 @@
         // file
         file: '',
         currentDir: localStore.getItem('currentDir'),
-        pid: this.$route.params.id,
+        pid: this.id,
         // Whether to drag upload
         dragOver: false
       }
@@ -171,12 +171,12 @@
         return new Promise((resolve, reject) => {
           let self = this
           let formData = new FormData()
-          formData.append('file', self.file)
-          formData.append('type', self.type)
-          formData.append('name', self.name)
-          formData.append('pid', localStore.getItem('pid') || self.id)
-          formData.append('currentDir', localStore.getItem('currentDir') || self.currentDir)
-          formData.append('description', self.description)
+          formData.append('file', this.file)
+          formData.append('type', this.type)
+          formData.append('name', this.name)
+          formData.append('pid', localStore.getItem('pid') || this.id)
+          formData.append('currentDir', localStore.getItem('currentDir') || this.currentDir)
+          formData.append('description', this.description)
           io.post('resources/create', res => {
             this.$message.success(res.msg)
             resolve()
@@ -226,7 +226,7 @@
         this.progress = 0
         this.file = ''
         this.currentDir = localStore.getItem('currentDir')
-        this.pid = this.$route.params.id
+        this.pid = this.id
         this.dragOver = false
       },
       _onChange () {
