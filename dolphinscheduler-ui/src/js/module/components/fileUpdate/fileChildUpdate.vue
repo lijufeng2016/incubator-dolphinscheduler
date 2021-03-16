@@ -173,8 +173,8 @@
           let formData = new FormData()
           formData.append('file', this.file)
           formData.append('type', this.type)
-          formData.append('name', this.name)
-          formData.append('pid', localStore.getItem('pid') || this.id)
+          formData.append('pid', this.id)
+          formData.append('currentDir', this.currentDir)
           formData.append('currentDir', localStore.getItem('currentDir') || this.currentDir)
           formData.append('description', this.description)
           io.post('resources/create', res => {
